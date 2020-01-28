@@ -1,18 +1,22 @@
 {
-  "name": "adamstipak/webpay-php",
-  "description": "GP Webpay API Wrapper",
+  "name": "webwings/webpay-php",
+  "description": "Webwings implementation of the GP Webpay API Wrapper",
   "type": "library",
   "keywords": ["webpay", "php"],
   "license": "MIT",
-  "homepage": "https://github.com/newPOPE/webpay-php",
+  "homepage": "https://github.com/webwingscz/gp-webpay-php-sdk",
   "authors": [
     {
       "name": "Adam Štipák",
       "homepage": "http://newpope.org"
+    },
+    {
+      "name": "Webwings s.r.o",
+      "homepage": "http://www.webwings.cz"
     }
   ],
   "autoload": {
-    "psr-0": { "AdamStipak\\Webpay": "src/" }
+    "psr-0": { "webwings\\Webpay": "src/" }
   },
   "require": {
     "php": "7.*",

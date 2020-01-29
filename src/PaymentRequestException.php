@@ -1,6 +1,6 @@
 <?php
 
-namespace AdamStipak\Webpay;
+namespace Webwings\Webpay;
 
 class PaymentRequestException extends Exception
 {

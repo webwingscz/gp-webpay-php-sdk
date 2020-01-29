@@ -16,7 +16,7 @@
     }
   ],
   "autoload": {
-    "psr-0": { "webwings\\Webpay": "src/" }
+    "psr-4": { "": "src/" }
   },
   "require": {
     "php": "7.*",

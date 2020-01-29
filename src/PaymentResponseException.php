@@ -1,8 +1,9 @@
 <?php
 
-namespace AdamStipak\Webpay;
+namespace Webwings\Webpay;
 
-class PaymentResponseException extends Exception {
+class PaymentResponseException extends Exception
+{
 
   /** @var int */
   private $prCode;

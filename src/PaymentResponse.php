@@ -1,8 +1,9 @@
 <?php
 
-namespace AdamStipak\Webpay;
+namespace Webwings\Webpay;
 
-class PaymentResponse {
+class PaymentResponse
+{
 
   /** @var array */
   private $params = [];

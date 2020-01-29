@@ -1,14 +1,9 @@
 <?php
 
-namespace Webpay;
+namespace Webwings\Webpay;
 
-class Api {
-
-  /** @var string */
-  private $privateKey;
-
-  /** @var string */
-  private $privateKeyPassword;
+class Api
+{
 
   /** @var string */
   private $webPayUrl;
@@ -16,78 +11,70 @@ class Api {
   /** @var string */
   private $merchantNumber;
 
+  /** @var Signer */
+  private $signer;
+
   /**
    * @param $merchantNumber
-   * @param $privateKey
-   * @param $privateKeyPassword
    * @param $webPayUrl
+   * @param Signer $signer
    */
-  public function __construct ($merchantNumber, $privateKey, $privateKeyPassword, $webPayUrl) {
+  public function __construct (string $merchantNumber, string $webPayUrl, Signer $signer) {
     $this->merchantNumber = $merchantNumber;
-    $this->privateKey = $privateKey;
-    $this->privateKeyPassword = $privateKeyPassword;
     $this->webPayUrl = $webPayUrl;
+    $this->signer = $signer;
   }
 
   /**
    * @param PaymentRequest $request
    * @return string
    */
-  public function createPaymentRequestUrl (PaymentRequest $request) {
-    // digest request
+  public function createPaymentRequestUrl (PaymentRequest $request): string {
     // build request URL based on PaymentRequest
-    // return URL
+    $paymentUrl = $this->webPayUrl . '?' . http_build_query($this->createPaymentParam($request));
+
+    return $paymentUrl;
+  }
+
+    /**
+     * @param PaymentRequest $request
+     * @return array
+     */
+  public function createPaymentParam (PaymentRequest $request): array {
+    // digest request
+    $request->setMerchantNumber($this->merchantNumber);
+    $params = $request->getParams();
+    $request->setDigest($this->signer->sign($params));
+
+    return $request->getParams();
   }
 
   /**
-   * @param PaymentResponseParams $params
-   * @return PaymentResponse
+   * @param PaymentResponse $response
+   * @throws Exception
+   * @throws PaymentResponseException
    */
-  public function verifyPayment (PaymentResponseParams $params) {
-    // verify digest
+  public function verifyPaymentResponse (PaymentResponse $response) {
+    // verify digest & digest1
+    try {
+      $responseParams = $response->getParams();
+      $this->signer->verify($responseParams, $response->getDigest());
+
+      $responseParams['MERCHANTNUMBER'] = $this->merchantNumber;
+
+      $this->signer->verify($responseParams, $response->getDigest1());
+    }
+    catch (SignerException $e) {
+      throw new Exception($e->getMessage(), $e->getCode(), $e);
+    }
+
     // verify PRCODE and SRCODE
-    // if OK return PaymentResponse
-    // if ERROR throw Exception
-  }
-
-  public function approveReversal (ApproveReversalRequest $request) {
-    // digest request
-    // call SOAP API
-    // verify response DIGEST
-    // verify PRCODE and SRCODE
-    // if OK return ApproveReversalResponse
-    // if ERROR throw Exception
-  }
-
-  public function deposit (DepositRequest $request) {
-    // same flow as approveReversal
-  }
-
-  public function depositReversal (DepositReversal $request) {
-    // same flow as approveReversal
-  }
-
-  public function credit (CreditRequest $request) {
-    // same flow as approveReversal
-  }
-
-  public function creditReversal (CreditReversal $request) {
-    // same flow as approveReversal
-  }
-
-  public function orderClose (OrderCloseRequest $request) {
-    // same flow as approveReversal
-  }
-
-  public function delete (DeleteRequest $request) {
-    // same flow as approveReversal
-  }
-
-  public function queryOrderState (QueryOrderStateRequest $request) {
-    // same flow as approveReversal
-  }
-
-  public function batchClose (BatchCloseRequest $request) {
-    // same flow as approveReversal
+    if (false !== $response->hasError()) {
+      throw new PaymentResponseException(
+        $response->getParams()['prcode'],
+        $response->getParams()['srcode'],
+        "Response has an error."
+      );
+    }
   }
 }

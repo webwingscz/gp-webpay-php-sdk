@@ -1,11 +1,12 @@
 <?php
 
-namespace AdamStipak\Webpay;
+namespace Webwings\Webpay;
 
 /**
  * Payment Requester class
  */
-class PaymentRequest {
+class PaymentRequest
+{
 
     const EUR = 978;
     const CZK = 203;
@@ -94,10 +95,10 @@ class PaymentRequest {
     /**
      * Set The Merchant Number for request
      *
+     * @param int $number Attributed merchant number.
      * @internal
-     * @param $number Attributed merchant number.
      */
-    public function setMerchantNumber ($number) {
+    public function setMerchantNumber (int $number) {
         $this->params['MERCHANTNUMBER'] = $number;
     }
 

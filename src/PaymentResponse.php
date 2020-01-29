@@ -1,6 +1,6 @@
 <?php
 
-namespace Webwings\Webpay;
+namespace Webpay;
 
 class PaymentResponse
 {

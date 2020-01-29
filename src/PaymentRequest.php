@@ -1,6 +1,6 @@
 <?php
 
-namespace Webwings\Webpay;
+namespace Webpay;
 
 /**
  * Payment Requester class
